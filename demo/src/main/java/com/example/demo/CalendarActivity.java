@@ -39,10 +39,9 @@ public class CalendarActivity {
 
     @Override
     public String toString() {
-        return "CalenderActivity{" +
-                "date=" + date +
-                ", clientName='" + clientName + '\'' +
-                ", serviceNo=" + serviceNo +
-                '}';
+        return "date=" + date +
+                "\nclientName='" + clientName  +
+                "\nerviceNo=" + serviceNo
+                ;
     }
 }

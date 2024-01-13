@@ -4,12 +4,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
+
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -17,6 +22,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -109,11 +116,8 @@ public class CalendarController implements Initializable {
         double spacingH = calendar.getHgap();
         double spacingV = calendar.getVgap();
 
-        //List of activities for a given month
-        //Map<Integer, List<CalendarActivity>> calendarActivityMap = getCalendarActivitiesMonth(dateFocus);
-
         int monthMaxDate = dateFocus.getMonth().maxLength();
-        //Check for leap year
+
         if(dateFocus.getYear() % 4 != 0 && monthMaxDate == 29){
             monthMaxDate = 28;
         }
@@ -146,20 +150,40 @@ public class CalendarController implements Initializable {
                 rectangle.setHeight(rectangleHeight);
                 stackPane.getChildren().add(rectangle);
 
-                //int calculatedDate = (j+1)+(7*numberOfWeek);
-
-                //System.out.println(dateFocus);
 
 
 
 
                 if (auxDate.getDayOfWeek().getValue() == (j + 1)) {
-                    System.out.println("AuxDate = "+auxDate.toString());
-                    System.out.println("dateFocus = "+dateFocus.toString());
+                    int i = 0;
+                    VBox vBoxContainer = new VBox(); // Creare un VBox principale per contenere le VBox
+                    vBoxContainer.setAlignment(Pos.CENTER);
+                    vBoxContainer.setSpacing(20);
+
+                    for (i = 0; i < 5; i++) {
+                        VBox calendarActivityBox = new VBox();
+                        LocalDate localDate = LocalDate.of(2024, 1, 1);
+                        LocalTime localTime = LocalTime.of(8, 0);
+                        LocalTime fine = LocalTime.of(9, 0);
+                        Evento evento = new Evento(localDate, localTime, fine, false, false, Evento.Sede.Padova, Evento.TipoServizio.Minori);
+
+                        Text text = new Text(evento.toString());
+                        calendarActivityBox.setMaxWidth(rectangleWidth * 0.8);
+                        calendarActivityBox.setMaxHeight(rectangleHeight * 0.05);
+                        calendarActivityBox.setStyle("-fx-background-color:RED");
+
+                        calendarActivityBox.getChildren().add(text);
+                        vBoxContainer.getChildren().add(calendarActivityBox); // Aggiungere la VBox al contenitore principale
+                    }
+
+                    stackPane.getChildren().add(vBoxContainer);
+
+
+
 
                     Text date = new Text(String.valueOf(dayWrite));
                     dayWrite += 1;
-                    double textTranslationY = -(rectangleHeight / 2) * 0.75;
+                    double textTranslationY = -(rectangleHeight / 2) * 0.9;
                     date.setTranslateY(textTranslationY);
                     stackPane.getChildren().add(date);
                     auxDate = auxDate.plusDays(1);
@@ -171,28 +195,13 @@ public class CalendarController implements Initializable {
                 }
 
 
-                /*if(dateFocus){
-                    int currentDate = calculatedDate - dateOffset;
-                    if(currentDate <= monthMaxDate){
-                        Text date = new Text(String.valueOf(currentDate));
-                        double textTranslationY = - (rectangleHeight / 2) * 0.75;
-                        date.setTranslateY(textTranslationY);
-                        stackPane.getChildren().add(date);
 
-                        /*List<CalendarActivity> calendarActivities = calendarActivityMap.get(currentDate);
-                        if(calendarActivities != null){
-                            createCalendarActivity(calendarActivities, rectangleHeight, rectangleWidth, stackPane);
-                        }
-                    }
-                    if(today.getYear() == dateFocus.getYear() && today.getMonth() == dateFocus.getMonth() && today.getDayOfMonth() == currentDate){
-                        rectangle.setStroke(Color.BLUE);
-                    }
-                }*/
                 calendar.getChildren().add(stackPane);
 
             }
         }else {
             for (int j = 0; j < 7; j++) {
+                VBox vBox = new VBox();
                 StackPane stackPane = new StackPane();
 
                 Rectangle rectangle = new Rectangle();
@@ -205,16 +214,14 @@ public class CalendarController implements Initializable {
                 rectangle.setHeight(rectangleHeight);
                 stackPane.getChildren().add(rectangle);
 
-                //int calculatedDate = (j+1)+(7*numberOfWeek);
-
-                //System.out.println(dateFocus);
-
 
                 if (auxDate.getDayOfWeek().getValue() == (j + 1) && auxDate.getMonth() == dateFocus.getMonth()) {
                     Text date = new Text(String.valueOf(auxDate.getDayOfMonth()));
                     double textTranslationY = -(rectangleHeight / 2) * 0.75;
                     date.setTranslateY(textTranslationY);
                     stackPane.getChildren().add(date);
+
+
                 }
 
 
@@ -222,32 +229,12 @@ public class CalendarController implements Initializable {
                         rectangle.setStroke(Color.BLUE);
                 }
 
-                /*if(dateFocus){
-                    int currentDate = calculatedDate - dateOffset;
-                    if(currentDate <= monthMaxDate){
-                        Text date = new Text(String.valueOf(currentDate));
-                        double textTranslationY = - (rectangleHeight / 2) * 0.75;
-                        date.setTranslateY(textTranslationY);
-                        stackPane.getChildren().add(date);
 
-                        /*List<CalendarActivity> calendarActivities = calendarActivityMap.get(currentDate);
-                        if(calendarActivities != null){
-                            createCalendarActivity(calendarActivities, rectangleHeight, rectangleWidth, stackPane);
-                        }
-                    }
-                    if(today.getYear() == dateFocus.getYear() && today.getMonth() == dateFocus.getMonth() && today.getDayOfMonth() == currentDate){
-                        rectangle.setStroke(Color.BLUE);
-                    }
-                }*/
                 calendar.getChildren().add(stackPane);
 
 
                 auxDate = auxDate.plusDays(1);
             }
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
 
         }
     }
@@ -309,5 +296,20 @@ public class CalendarController implements Initializable {
         }
 
         return createCalendarMap(calendarActivities);
+    }
+
+    private void handleRectangleClick(MouseEvent event) {
+        System.out.println("Rettangolo cliccato!");
+        // Aggiungi qui le azioni che desideri eseguire al cliccare del rettangolo
+    }
+
+    private StackPane createClickableRectangle(String labelText, Color color) {
+        Rectangle rectangle = new Rectangle(70, 50, color);
+        rectangle.setOnMouseClicked(this::handleRectangleClick);
+
+        Text text = new Text(labelText);
+        StackPane rectangleWithText = new StackPane(rectangle, text);
+
+        return rectangleWithText;
     }
 }
