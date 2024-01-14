@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
@@ -161,13 +162,33 @@ public class CalendarController implements Initializable {
                     vBoxContainer.setSpacing(20);
 
                     for (i = 0; i < 5; i++) {
+                        LocalTime localTime = LocalTime.of(8, 0 , 0);
+                        try {
+                            Connection connection = DatabaseConnection.databaseConnection();
+                            Statement statement = connection.createStatement();
+
+                            String query = ("SELECT * FROM eventi " +
+                                    "WHERE Data = ? " +
+                                    "AND Inizio = ? " +
+                                    "AND Sede = 'Verona'" +
+                                    "AND TipoServizio = 'Scadenza'");
+
+
+
+                            PreparedStatement preparedStatement = connection.prepareStatement(query);
+                            preparedStatement.setObject(2, auxDate);
+                            preparedStatement.setObject(2, localTime);
+                            ResultSet resultSet = preparedStatement.executeQuery();
+
+                        }catch (SQLException e) {
+                            System.out.println(e);
+                        }
+
+
                         VBox calendarActivityBox = new VBox();
                         LocalDate localDate = LocalDate.of(2024, 1, 1);
-                        LocalTime localTime = LocalTime.of(8, 0);
-                        LocalTime fine = LocalTime.of(9, 0);
-                        Evento evento = new Evento(localDate, localTime, fine, false, false, Evento.Sede.Padova, Evento.TipoServizio.Minori);
 
-                        Text text = new Text(evento.toString());
+                        Text text = new Text("ff");
                         calendarActivityBox.setMaxWidth(rectangleWidth * 0.8);
                         calendarActivityBox.setMaxHeight(rectangleHeight * 0.05);
                         calendarActivityBox.setStyle("-fx-background-color:RED");
